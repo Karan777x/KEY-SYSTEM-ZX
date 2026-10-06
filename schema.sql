@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS keys (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  key TEXT NOT NULL UNIQUE,
+  expires_at INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'active',
+  device_id TEXT,
+  created_at INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_keys_key ON keys(key);

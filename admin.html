@@ -1,0 +1,12 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KeySystem Admin</title><link rel="stylesheet" href="/style.css"></head>
+<body><main class="card wide"><div class="logo">KEY<span>SYSTEM ADMIN</span></div>
+<input id="token" placeholder="Admin token"><input id="hours" type="number" value="24" min="1" placeholder="Hours">
+<button onclick="createKey()">CREATE KEY</button><button onclick="loadKeys()">REFRESH</button><pre id="out"></pre><div id="list"></div></main>
+<script>
+const out=x=>document.getElementById('out').textContent=JSON.stringify(x,null,2);
+async function createKey(){let r=await fetch('/api/admin/keys',{method:'POST',headers:{authorization:'Bearer '+token.value,'content-type':'application/json'},body:JSON.stringify({hours:+hours.value})});out(await r.json());loadKeys()}
+async function loadKeys(){let r=await fetch('/api/admin/keys',{headers:{authorization:'Bearer '+token.value}});let d=await r.json();list.innerHTML=(d.results||[]).map(x=>`<div class="row"><b>${x.key}</b><span>${x.status}</span><button onclick="revoke(${x.id})">REVOKE</button></div>`).join('')}
+async function revoke(id){await fetch('/api/admin/keys/'+id,{method:'POST',headers:{authorization:'Bearer '+token.value,'content-type':'application/json'},body:JSON.stringify({action:'revoke'})});loadKeys()}
+</script></body></html>
